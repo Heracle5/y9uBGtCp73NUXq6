@@ -216,6 +216,52 @@ set(findall(gcf,'-property','LineWidth'),'LineWidth',2);
 set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
 set(gca,'FontName','Times New Roman');
 
+%%
+%Task 2
+%%
+%parameter setting
+number_of_samping=300;%number of sampling
+number_of_filter_coffecient =300 ; %number of filter coffecient
+number_of_sample_frequency_method=300;%number of sample frequency method
+number_of_fft_point=64;%number of fft point
+length_of_taps=[1,2,3];
+Kc=[0,1,10];
+fD_Ts=[0.1,0.005];
+samping_time_interval=0.1*ms; %sampling time interval
+frequency_doppler_shift=fD_Ts./samping_time_interval;
+
+%% we need to draw 18(3*3*2) figures using mesh
+%output = time_frequency_varying_method(method=2,length_of_taps,number_of_fft_point,number_of_samping,samping_time_interval,frequency_doppler_shift,number_of_filter_coffecient,number_of_sample_frequency_method,Kc)
+
+for i=1:3
+    for j=1:3
+        for k=1:2
+            output = time_frequency_varying_method(2,length_of_taps(i),number_of_fft_point,number_of_samping,samping_time_interval,frequency_doppler_shift(k),number_of_filter_coffecient,number_of_sample_frequency_method,Kc(j));
+            %start from figure 5
+            figure(4+(i-1)*6+(j-1)*2+k);
+            mesh(1:number_of_samping,1:number_of_fft_point,abs(output));
+            xlabel('Time');
+            ylabel('Frequency');
+            zlabel('Magnitude');
+            title(['Time-Frequency Varying Channel (Kc=',num2str(Kc(j)),',fD_Ts=',num2str(fD_Ts(k)),',Taps=',num2str(length_of_taps(i)),')']);
+            grid on;
+            set(findall(gcf,'-property','FontSize'),'FontSize',12);
+            set(findall(gcf,'-property','LineWidth'),'LineWidth',2);
+            set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
+            set(gca,'FontName','Times New Roman');
+         end
+      end
+end
+%%
+%save all the figures in png format, name as figure_number_title(Kc= fDTs= Taps=).png in the figure folder
+for i=1:3
+    for j=1:3
+        for k=1:2
+            saveas(figure(4+(i-1)*6+(j-1)*2+k),['figure/Figure_',num2str(4+(i-1)*6+(j-1)*2+k),'_Time-Frequency Varying Channel (Kc=',num2str(Kc(j)),',fD_Ts=',num2str(fD_Ts(k)),',Taps=',num2str(length_of_taps(i)),').png']);
+        end
+      end
+end
+
 
 
 
