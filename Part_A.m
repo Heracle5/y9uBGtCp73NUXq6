@@ -81,17 +81,15 @@ for num=1:3
 xaxis=linspace(temp_xaxis(1),temp_xaxis(end),number_of_histogram);
 tmp_s_square=Kc(num)/(Kc(num)+1);
 tmp_sigma_square=1/(Kc(num)+1);
-%     Rician_theoretical = makedist('Rician','s',sqrt(2*Kc(num)),'sigma',1);
-%     Rician_theoretical_pdf=pdf(Rician_theoretical,xaxis);
-
 Rician_theoretical=abs((xaxis./tmp_sigma_square).*exp(-(xaxis.^2+tmp_s_square)./(2*tmp_sigma_square)).*besselj(0,(sqrt(tmp_s_square).*xaxis)./(tmp_sigma_square)));
-    storage_pdf(3*num,:)=Rician_theoretical./sum(Rician_theoretical);
-    storage_xaxis(3*num,:)=xaxis;
+storage_pdf(3*num,:)=Rician_theoretical./sum(Rician_theoretical);
+storage_xaxis(3*num,:)=xaxis;
 end
 %%using subplot to plot(Rician_theoretical_pdf Rician_spectrum_method Rician_filter_method with same kc() in the same subplot, so we have just 3 subplots)
 figure(2);
 subplot(3,1,1);
 plot(storage_xaxis(1,:),storage_pdf(1,:),storage_xaxis(2,:),storage_pdf(2,:),storage_xaxis(3,:),storage_pdf(3,:));
+xlim([0 2.5]);
 xlabel('Amplitude');
 ylabel('Probability');
 legend('Filter Method','Spectrum Method','Theoretical');
@@ -103,6 +101,7 @@ set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
 set(gca,'FontName','Times New Roman');
 subplot(3,1,2);
 plot(storage_xaxis(4,:),storage_pdf(4,:),storage_xaxis(5,:),storage_pdf(5,:),storage_xaxis(6,:),storage_pdf(6,:));
+xlim([0 2.5]);
 xlabel('Amplitude');
 ylabel('Probability');
 legend('Filter Method','Spectrum Method','Theoretical');
@@ -114,6 +113,7 @@ set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
 set(gca,'FontName','Times New Roman');
 subplot(3,1,3);
 plot(storage_xaxis(7,:),storage_pdf(7,:),storage_xaxis(8,:),storage_pdf(8,:),storage_xaxis(9,:),storage_pdf(9,:));
+xlim([0 2.5]);
 xlabel('Amplitude');
 ylabel('Probability');
 legend('Filter Method','Spectrum Method','Theoretical');
