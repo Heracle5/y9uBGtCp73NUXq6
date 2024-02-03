@@ -11,7 +11,7 @@ MPS=1;
 KPH=1/3.6;
 ms=1e-3;
 Hz=1;
-
+rng(20020512);
 %%
 %global parameter setting
 frequency_carrier = 2*GHz; %carrier frequency
@@ -66,6 +66,9 @@ number_of_histogram=100;
 storage_pdf=zeros(9,number_of_histogram);
 storage_xaxis=zeros(9,number_of_histogram);
 storage_cdf=zeros(9,number_of_histogram);
+storage_xcorr=zeros(6,2*number_of_samping-1);
+storage_xcorr_xaxis=zeros(6,2*number_of_samping-1);
+storage_xcorr_theoretical=zeros(3,2*number_of_samping-1);
 for num=1:3
    Rician_filter_method = Rician_kc(output_of_filter_discard,Kc(num));
    Rician_spectrum_method = Rician_kc(channel_time_domain,Kc(num));
@@ -84,7 +87,15 @@ tmp_sigma_square=1/(Kc(num)+1);
 Rician_theoretical=abs((xaxis./tmp_sigma_square).*exp(-(xaxis.^2+tmp_s_square)./(2*tmp_sigma_square)).*besselj(0,(sqrt(tmp_s_square).*xaxis)./(tmp_sigma_square)));
 storage_pdf(3*num,:)=Rician_theoretical./sum(Rician_theoretical);
 storage_xaxis(3*num,:)=xaxis;
+[temp_xcorr,temp_xcorr_xaxis]=xcorr((Rician_filter_method),'unbiased');
+storage_xcorr(2*num-1,:)=temp_xcorr';
+storage_xcorr_xaxis(2*num-1,:)=temp_xcorr_xaxis;
+[temp_xcorr,temp_xcorr_xaxis]=xcorr((Rician_spectrum_method),'unbiased');
+storage_xcorr(2*num,:)=temp_xcorr';
+storage_xcorr_xaxis(2*num,:)=temp_xcorr_xaxis;
+storage_xcorr_theoretical(num,:)=besselj(0,2*pi*frequency_doppler_shift.*temp_xcorr_xaxis);
 end
+%%
 %%using subplot to plot(Rician_theoretical_pdf Rician_spectrum_method Rician_filter_method with same kc() in the same subplot, so we have just 3 subplots)
 figure(2);
 subplot(3,1,1);
@@ -125,6 +136,85 @@ set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
 set(gca,'FontName','Times New Roman');
 
 
+%%
+%figure compared rician channel(filter method VS spectrum method vs theoretical) cdf version (kc=0,1,10) using cumsum
+figure(3);
+subplot(3,1,1);
+plot(storage_xaxis(1,:),cumsum(storage_pdf(1,:)),storage_xaxis(2,:),cumsum(storage_pdf(2,:)),storage_xaxis(3,:),cumsum(storage_pdf(3,:)));
+xlim([0 2.5]);
+xlabel('Amplitude');
+ylabel('Probability');
+legend('Filter Method','Spectrum Method','Theoretical');
+title('Rician Channel CDF (Kc=0)');
+grid on;
+set(findall(gcf,'-property','FontSize'),'FontSize',12);
+set(findall(gcf,'-property','LineWidth'),'LineWidth',2);
+set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
+set(gca,'FontName','Times New Roman');
+subplot(3,1,2);
+plot(storage_xaxis(4,:),cumsum(storage_pdf(4,:)),storage_xaxis(5,:),cumsum(storage_pdf(5,:)),storage_xaxis(6,:),cumsum(storage_pdf(6,:)));
+xlim([0 2.5]);
+xlabel('Amplitude');
+ylabel('Probability');
+legend('Filter Method','Spectrum Method','Theoretical');
+title('Rician Channel CDF (Kc=1)');
+grid on;
+set(findall(gcf,'-property','FontSize'),'FontSize',12);
+set(findall(gcf,'-property','LineWidth'),'LineWidth',2);
+set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
+set(gca,'FontName','Times New Roman');
+subplot(3,1,3);
+plot(storage_xaxis(7,:),cumsum(storage_pdf(7,:)),storage_xaxis(8,:),cumsum(storage_pdf(8,:)),storage_xaxis(9,:),cumsum(storage_pdf(9,:)));
+xlim([0 2.5]);
+xlabel('Amplitude');
+ylabel('Probability');
+legend('Filter Method','Spectrum Method','Theoretical');
+title('Rician Channel CDF (Kc=10)');
+grid on;
+set(findall(gcf,'-property','FontSize'),'FontSize',12);
+set(findall(gcf,'-property','LineWidth'),'LineWidth',2);
+set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
+set(gca,'FontName','Times New Roman');
+
+%%
+%figure compared rician channel(filter method VS spectrum method vs theoretical) xcorr version (kc=0,1,10)
+figure(4);
+subplot(3,1,1);
+plot(storage_xcorr_xaxis(1,:),storage_xcorr(1,:),storage_xcorr_xaxis(2,:),storage_xcorr(2,:),storage_xcorr_xaxis(2,:),storage_xcorr_theoretical(1,:));
+xlim([-1000 1000]);
+xlabel('Lag');
+ylabel('Correlation');
+legend('Filter Method','Spectrum Method','Theoretical');
+title('Rician Channel Autocorrelation (Kc=0)');
+grid on;
+set(findall(gcf,'-property','FontSize'),'FontSize',12);
+set(findall(gcf,'-property','LineWidth'),'LineWidth',2);
+set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
+set(gca,'FontName','Times New Roman');
+subplot(3,1,2);
+plot(storage_xcorr_xaxis(3,:),storage_xcorr(3,:),storage_xcorr_xaxis(4,:),storage_xcorr(4,:),storage_xcorr_xaxis(4,:),storage_xcorr_theoretical(2,:));
+xlim([-1000 1000]);
+xlabel('Lag');
+ylabel('Correlation');
+legend('Filter Method','Spectrum Method','Theoretical');
+title('Rician Channel Autocorrelation (Kc=1)');
+grid on;
+set(findall(gcf,'-property','FontSize'),'FontSize',12);
+set(findall(gcf,'-property','LineWidth'),'LineWidth',2);
+set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
+set(gca,'FontName','Times New Roman');
+subplot(3,1,3);
+plot(storage_xcorr_xaxis(5,:),storage_xcorr(5,:),storage_xcorr_xaxis(6,:),storage_xcorr(6,:),storage_xcorr_xaxis(6,:),storage_xcorr_theoretical(3,:));
+xlim([-1000 1000]);
+xlabel('Lag');
+ylabel('Correlation');
+legend('Filter Method','Spectrum Method','Theoretical');
+title('Rician Channel Autocorrelation (Kc=10)');
+grid on;
+set(findall(gcf,'-property','FontSize'),'FontSize',12);
+set(findall(gcf,'-property','LineWidth'),'LineWidth',2);
+set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
+set(gca,'FontName','Times New Roman');
 
 
 
