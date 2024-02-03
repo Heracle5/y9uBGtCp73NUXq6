@@ -70,30 +70,30 @@ storage_xcorr=zeros(6,2*number_of_samping-1);
 storage_xcorr_xaxis=zeros(6,2*number_of_samping-1);
 storage_xcorr_theoretical=zeros(3,2*number_of_samping-1);
 for num=1:3
-   Rician_filter_method = Rician_kc(output_of_filter_discard,Kc(num));
-   Rician_spectrum_method = Rician_kc(channel_time_domain,Kc(num));
-   %
+    Rician_filter_method = Rician_kc(output_of_filter_discard,Kc(num));
+    Rician_spectrum_method = Rician_kc(channel_time_domain,Kc(num));
+    %
     [temp_pdf,temp_xaxis]=hist(abs(Rician_filter_method),number_of_histogram);
     storage_pdf(3*num-2,:)=temp_pdf./sum(temp_pdf);
     storage_xaxis(3*num-2,:)=temp_xaxis;
     [temp_pdf,temp_xaxis]=hist(abs(Rician_spectrum_method),number_of_histogram);
     storage_pdf(3*num-1,:)=temp_pdf./sum(temp_pdf);
-   storage_xaxis(3*num-1,:)=temp_xaxis;
-   %
+    storage_xaxis(3*num-1,:)=temp_xaxis;
+    %
 
-xaxis=linspace(temp_xaxis(1),temp_xaxis(end),number_of_histogram);
-tmp_s_square=Kc(num)/(Kc(num)+1);
-tmp_sigma_square=1/(Kc(num)+1);
-Rician_theoretical=abs((xaxis./tmp_sigma_square).*exp(-(xaxis.^2+tmp_s_square)./(2*tmp_sigma_square)).*besselj(0,(sqrt(tmp_s_square).*xaxis)./(tmp_sigma_square)));
-storage_pdf(3*num,:)=Rician_theoretical./sum(Rician_theoretical);
-storage_xaxis(3*num,:)=xaxis;
-[temp_xcorr,temp_xcorr_xaxis]=xcorr((Rician_filter_method),'unbiased');
-storage_xcorr(2*num-1,:)=temp_xcorr';
-storage_xcorr_xaxis(2*num-1,:)=temp_xcorr_xaxis;
-[temp_xcorr,temp_xcorr_xaxis]=xcorr((Rician_spectrum_method),'unbiased');
-storage_xcorr(2*num,:)=temp_xcorr';
-storage_xcorr_xaxis(2*num,:)=temp_xcorr_xaxis;
-storage_xcorr_theoretical(num,:)=besselj(0,2*pi*frequency_doppler_shift.*temp_xcorr_xaxis);
+    xaxis=linspace(temp_xaxis(1),temp_xaxis(end),number_of_histogram);
+    tmp_s_square=Kc(num)/(Kc(num)+1);
+    tmp_sigma_square=1/(Kc(num)+1);
+    Rician_theoretical=abs((xaxis./tmp_sigma_square).*exp(-(xaxis.^2+tmp_s_square)./(2*tmp_sigma_square)).*besselj(0,(sqrt(tmp_s_square).*xaxis)./(tmp_sigma_square)));
+    storage_pdf(3*num,:)=Rician_theoretical./sum(Rician_theoretical);
+    storage_xaxis(3*num,:)=xaxis;
+    [temp_xcorr,temp_xcorr_xaxis]=xcorr((Rician_filter_method),'unbiased');
+    storage_xcorr(2*num-1,:)=temp_xcorr';
+    storage_xcorr_xaxis(2*num-1,:)=temp_xcorr_xaxis;
+    [temp_xcorr,temp_xcorr_xaxis]=xcorr((Rician_spectrum_method),'unbiased');
+    storage_xcorr(2*num,:)=temp_xcorr';
+    storage_xcorr_xaxis(2*num,:)=temp_xcorr_xaxis;
+    storage_xcorr_theoretical(num,:)=besselj(0,2*pi*frequency_doppler_shift.*temp_xcorr_xaxis);
 end
 %%
 %%using subplot to plot(Rician_theoretical_pdf Rician_spectrum_method Rician_filter_method with same kc() in the same subplot, so we have just 3 subplots)
@@ -249,8 +249,8 @@ for i=1:3
             set(findall(gcf,'-property','LineWidth'),'LineWidth',2);
             set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
             set(gca,'FontName','Times New Roman');
-         end
-      end
+        end
+    end
 end
 %%
 %save all the figures in png format, name as figure_number_title(Kc= fDTs= Taps=).png in the figure folder
@@ -259,7 +259,7 @@ for i=1:3
         for k=1:2
             saveas(figure(4+(i-1)*6+(j-1)*2+k),['figure/Figure_',num2str(4+(i-1)*6+(j-1)*2+k),'_Time-Frequency Varying Channel (Kc=',num2str(Kc(j)),',fD_Ts=',num2str(fD_Ts(k)),',Taps=',num2str(length_of_taps(i)),').png']);
         end
-      end
+    end
 end
 
 
