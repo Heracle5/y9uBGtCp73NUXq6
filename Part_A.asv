@@ -93,7 +93,7 @@ for num=1:3
     [temp_xcorr,temp_xcorr_xaxis]=xcorr((Rician_spectrum_method),'unbiased');
     storage_xcorr(2*num,:)=temp_xcorr';
     storage_xcorr_xaxis(2*num,:)=temp_xcorr_xaxis;
-    storage_xcorr_theoretical(num,:)=(besselj(0,2*pi*frequency_doppler_shift.*temp_xcorr_xaxis)+Kc(num).^2)./max(besselj(0,2*pi*frequency_doppler_shift.*temp_xcorr_xaxis)+Kc(num).^2);
+    storage_xcorr_theoretical(num,:)=(besselj(0,2*pi*frequency_doppler_shift.*temp_xcorr_xaxis)+Kc(num))./norm(besselj(0,2*pi*frequency_doppler_shift.*temp_xcorr_xaxis)+Kc(num));
 end
 %%
 %%using subplot to plot(Rician_theoretical_pdf Rician_spectrum_method Rician_filter_method with same kc() in the same subplot, so we have just 3 subplots)
