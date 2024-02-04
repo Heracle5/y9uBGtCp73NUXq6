@@ -237,13 +237,25 @@ for i=1:3
     for j=1:3
         for k=1:2
             output = time_frequency_varying_method(2,length_of_taps(i),number_of_fft_point,number_of_samping,samping_time_interval,frequency_doppler_shift(k),number_of_filter_coffecient,number_of_sample_frequency_method,Kc(j));
-            %start from figure 5
+            %start from figure 5, try subplot, subplot(1,2,1) mesh, subplot(1,2,1) surf(0:number_of_samping-1, 1:number_of_fft_point, abs(C), ’MeshStyle’, ’row’)
             figure(4+(i-1)*6+(j-1)*2+k);
+            sgtitle(['Time-Frequency Varying Channel (Kc=',num2str(Kc(j)),',f_DT_s=',num2str(fD_Ts(k)),',Taps=',num2str(length_of_taps(i)),')']);
+            subplot(1,2,1);
             mesh(1:number_of_samping,1:number_of_fft_point,abs(output));
-            xlabel('Time');
-            ylabel('Frequency');
-            zlabel('Magnitude');
-            title(['Time-Frequency Varying Channel (Kc=',num2str(Kc(j)),',fD_Ts=',num2str(fD_Ts(k)),',Taps=',num2str(length_of_taps(i)),')']);
+            xlabel('Time[T_s]');
+            ylabel('Frequency[1/(NT_s)]');
+            zlabel('|C[n,k]|');
+            grid on;
+            set(findall(gcf,'-property','FontSize'),'FontSize',12);
+            set(findall(gcf,'-property','LineWidth'),'LineWidth',2);
+            set(findall(gcf,'-property','MarkerSize'),'MarkerSize',10);
+            set(gca,'FontName','Times New Roman');
+            subplot(1,2,2);
+            surf(0:number_of_samping-1, 1:number_of_fft_point, abs(output), 'MeshStyle', 'row');
+            view(0,90);
+            xlabel('Time[T_s]');
+            ylabel('Frequency[1/(NT_s)]');
+            zlabel('C[n,k]');
             grid on;
             set(findall(gcf,'-property','FontSize'),'FontSize',12);
             set(findall(gcf,'-property','LineWidth'),'LineWidth',2);
