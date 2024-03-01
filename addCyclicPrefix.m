@@ -1,8 +1,8 @@
 
-% function to add cyclic prefix
+%% function to add cyclic prefix
+% CP should only work if longer than channel impulse response
 
-% removal of CP
-% filter_output(L+1:end)
+% removal of CP: filter_output(L+1:end)
 
 
 function input_signal_cp = addCyclicPrefix(input_signal, channel_coffecients, prefix_length_option, prefix_length)
@@ -10,13 +10,13 @@ function input_signal_cp = addCyclicPrefix(input_signal, channel_coffecients, pr
     N = length(input_signal); % Length of input signal
     
     switch prefix_length_option
-        case 'prefix_length_as_channel_length'
+        case 'auto'  % the automatic option provides a prefix that is channel length + 1 long
             L = length(channel_coffecients); % Length of channel
             cyclic_prefix = input_signal(N-L+1:N);  % last samples of input signal as the CP
             input_signal_cp  = [cyclic_prefix input_signal];  % prepend signal with CP
     
         case 'manual_length'
-            L = prefix_length;
+            L = prefix_length; % Length of channel
             cyclic_prefix = input_signal(N-L+1:N);  % last samples of input signal as the CP
             input_signal_cp  = [cyclic_prefix input_signal];
 
