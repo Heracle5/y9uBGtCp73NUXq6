@@ -16,6 +16,6 @@ function [input_signal_cp, length_cp] = addCyclicPrefix(input_signal, channel_co
 
     cyclic_prefix = input_signal(N-L+1:N);  % last samples of input signal as the CP
     input_signal_cp  = [cyclic_prefix input_signal];  % prepend signal with CP
-    length_cp = L;
+    length_cp = L;  % for the case where the cp length is automatic
 
 end
