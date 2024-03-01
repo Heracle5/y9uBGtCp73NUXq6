@@ -3,7 +3,7 @@
 % CP should only work if longer than channel impulse response
 
 
-function input_signal_cp = test_addCyclicPrefix(input_signal, channel_coffecients, prefix_length_option, prefix_length)
+function input_signal_cp = addCyclicPrefix(input_signal, channel_coffecients, prefix_length_option, prefix_length)
     
     N = length(input_signal); % Length of input signal
     
